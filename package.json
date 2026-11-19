@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "build": "next build && node scripts/build-offline.mjs",
+    "start": "node scripts/serve.mjs",
+    "lint": "eslint",
+    "test": "node --test tests/offline.test.mjs",
+    "test:e2e": "node tests/browser.mjs"
   },
   "dependencies": {
+    "dexie": "4.2.1",
+    "dexie-react-hooks": "1.1.7",
+    "lucide-react": "0.468.0",
     "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0"
@@ -20,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "playwright-core": "1.59.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

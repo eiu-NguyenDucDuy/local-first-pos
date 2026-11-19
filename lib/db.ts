@@ -1,4 +1,4 @@
-import Dexie, { Table } from 'dexie';
+import Dexie, { type Table } from 'dexie';
 
 export interface Product {
   id?: number;
@@ -6,18 +6,43 @@ export interface Product {
   sellingPrice: number;
   description?: string;
   barcode?: string;
-  stock?: number;         // Default 1
-  unit?: string;          // Default "Cái / Gói / ..."
+  stock?: number;
+  unit?: string;
   createdAt?: Date;
+  categoryId?: number;
+  archivedAt?: Date;
+  revision?: number;
+}
+
+export interface Category {
+  id?: number;
+  name: string;
+  key: string;
+}
+
+export interface InventoryLog {
+  id?: number;
+  productId: number;
+  kind: 'opening' | 'count';
+  previousStock: number;
+  newStock: number;
+  delta: number;
+  reason: string;
+  createdAt: Date;
 }
 
 export class LocalPosDatabase extends Dexie {
-  products!: Table<Product>;
+  products!: Table<Product, number>;
+  categories!: Table<Category, number>;
+  inventoryLogs!: Table<InventoryLog, number>;
 
   constructor() {
     super('LocalPosDB');
-    this.version(1).stores({
-      products: '++id, barcode, name'
+    this.version(1).stores({ products: '++id, barcode, name' });
+    this.version(2).stores({
+      products: '++id, barcode, name, categoryId',
+      categories: '++id, &key',
+      inventoryLogs: '++id, productId',
     });
   }
 }
